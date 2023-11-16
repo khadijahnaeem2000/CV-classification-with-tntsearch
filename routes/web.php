@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -16,3 +17,7 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
+
+Route::get('get_csv', [\App\Http\Controllers\CsvController::class, 'get_csv'])->name('get_csv');
+Route::get('an', [\App\Http\Controllers\CsvController::class, 'launchFilter'])->name('launchFilter');
+Route::get('guessing', [\App\Http\Controllers\CsvController::class, 'guesspdf'])->name('guesspdf');
