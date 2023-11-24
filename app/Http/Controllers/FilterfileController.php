@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 use Illuminate\Support\Str;
 use App\Models\filterfile;
 use Illuminate\Http\Request;
-
+use Illuminate\Support\Facades\File;
 class FilterfileController extends Controller
 {
     /**
@@ -14,13 +14,27 @@ class FilterfileController extends Controller
     {
         //
     }
-
+     public function reUpdateStatus($id)
+    {
+        $filter = filterfile::find($id);
+         $filter->Status = 0;
+        $filter->save();
+        return redirect()->back();
+    }
+  public function updateStatus($id)
+    {
+        $filter = filterfile::find($id);
+         $filter->Status = 1;
+        $filter->save();
+        return redirect()->back();
+    }
     /**
      * Show the form for creating a new resource.
      */
     public function create()
     {
-        return view('file.filter');
+        $filter = filterfile::all();
+        return view('file.filter',compact('filter'));
     }
 
     /**
@@ -104,8 +118,50 @@ class FilterfileController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(filterfile $filterfile)
-    {
-        //
+public function destroy($id)
+{
+    // Find the record in the database
+    $filter = filterfile::find($id);
+
+    // Get the folder name from the database
+    $filterName = $filter->FilterName;
+    $csvName = $filter->csvName;
+    $folderNameOne = $filter->FolderNameOne;
+    $folderNameTwo = $filter->FolderNameTwo;
+       $guest = $filter->Guest;
+    
+    // Delete the folder from the public directory
+    if (File::isDirectory(public_path($folderNameOne))) {
+        File::deleteDirectory(public_path($folderNameOne));
     }
+     if (File::isDirectory(public_path($folderNameTwo))) {
+        File::deleteDirectory(public_path($folderNameTwo));
+    }
+     if (File::isDirectory(public_path($guest))) {
+        File::deleteDirectory(public_path($guest));
+    }
+    $filePath = public_path('classify\\'.$filterName.'.csv');
+
+ if ($filePath) {
+    unlink($filePath);
+  
+} else {
+    dd('File not found') ;
+}
+ $csvFilePath = public_path('files\\'.$csvName);
+if ($csvFilePath) {
+    unlink($csvFilePath);
+  
+} else {
+    dd('File not found') ;
+}
+    
+
+    // Delete the record from the database
+    $filter->delete();
+
+    // Redirect back to the previous page
+    return redirect()->back();
+}
+
 }

@@ -145,7 +145,7 @@ class CsvController extends Controller
     {
         $filter = filterfile::find($id);
         $csvName = $filter->csvName;
-        $filterName = $filter->filterName;
+        $filterName = $filter->FilterName;
         $file = public_path('files/'.$csvName);
         $data = $this->loadCSV($file);
     
@@ -159,8 +159,13 @@ class CsvController extends Controller
             
             $classifier->learn($text, $type);
         }
+        $classifyFolder = public_path('classify');
+    if (!file_exists($classifyFolder)) {
+        mkdir($classifyFolder, 0755, true);
+    }
     
-        $classifier->save(public_path('classify/'.$filterName.".csv"));
+    $classifier->save(public_path('classify\\'.$filterName.".csv"));
+       
     }
     
     function loadCSV($filePath)

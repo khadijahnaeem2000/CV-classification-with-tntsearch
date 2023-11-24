@@ -7,12 +7,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Laravel File Upload</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.6.0/css/bootstrap.min.css">
+    <style>
+        *{
+            overflow-x:hidden;
+            overflow-y:hidden;
+        }
+    </style>
 </head>
 <body>
     <h1>Display PDF</h1>
 
     <p>Folder Name: {{ $folderName }}</p>
-
+<div class="row">
+    <div class="col-md-1" style="margin-top:20%">
+         @if(is_array($pdfFiles) && count($pdfFiles) > 2)
+        <button id="prevButton" class="btn btn-primary">Previous</button>
+         @endif
+    </div>
+    <div class="col-md-10">
     <div class="pdf-container">
         @if(isset($pdfFiles[0]))
             <iframe id="pdfViewer" src="{{ asset($pdfFiles[0]) }}" width="100%" height="600px"></iframe>
@@ -21,10 +33,16 @@
         @endif
     </div>
 
+    </div>
+    <div class="col-md-1" style="margin-top:20%">
+
     @if(is_array($pdfFiles) && count($pdfFiles) > 1)
-        <button id="prevButton">Previous</button>
-        <button id="nextButton">Next</button>
+     
+        <button id="nextButton" class="btn btn-primary">Next</button>
     @endif
+    </div>
+</div>
+
 
     <script>
         let currentIndex = 0;

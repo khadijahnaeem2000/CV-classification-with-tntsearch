@@ -23,11 +23,13 @@ Route::get('/', function () {
 });
 
 Route::get('get_csv', [\App\Http\Controllers\CsvController::class, 'get_csv'])->name('get_csv');
-Route::get('an', [\App\Http\Controllers\CsvController::class, 'launchFilter'])->name('launchFilter');
+Route::get('launchFilter', [\App\Http\Controllers\CsvController::class, 'launchFilter'])->name('launchFilter');
 Route::get('guessing', [\App\Http\Controllers\CsvController::class, 'guesspdf'])->name('guesspdf');
 
 Route::get('filter', [\App\Http\Controllers\FilterfileController::class, 'create'])->name('filter');
-
+Route::delete('delete_filter/{id}', [\App\Http\Controllers\FilterfileController::class, 'destroy'])->name('delete_filter');
+Route::get('reUpdateStatus/{id}', [\App\Http\Controllers\FilterfileController::class, 'reUpdateStatus'])->name('reUpdateStatus');
+Route::get('updateStatus/{id}', [\App\Http\Controllers\FilterfileController::class, 'updateStatus'])->name('updateStatus');
 Route::post('filterStore', [\App\Http\Controllers\FilterfileController::class, 'store'])->name('filterStore');
 Route::post('ClassficationStore/{id}', [\App\Http\Controllers\FilterfileController::class, 'ClassficationStore'])->name('ClassficationStore');
 
