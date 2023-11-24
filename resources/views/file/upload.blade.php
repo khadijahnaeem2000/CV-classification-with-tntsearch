@@ -1,5 +1,3 @@
-<!-- resources/views/file/upload.blade.php -->
-
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 <head>
@@ -8,117 +6,170 @@
     <title>Laravel File Upload</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.6.0/css/bootstrap.min.css">
     <style>
-        *{
+        * {
             overflow-x: hidden; 
         }
-    /* Style for the file input container */
-    .file-input-container {
-        position: relative;
-        width: 700px; /* Adjust the width as needed */
-        height: 550px; /* Adjust the height as needed */
-        overflow: hidden;
-        border-radius: 5px;
-     
-        margin: 10px 0; /* Optional margin */
-    }
 
-    /* Style for the actual file input */
-    .file-input {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        opacity: 0;
-        cursor: pointer;
-    }
-
-    /* Style for the "Choose File" label */
-    .file-label {
-        display: flex;
-    justify-content: center; /* Center horizontally */
+      .container {
+    height: 300px;
+    display: flex;
+    flex-direction: column; /* Change to column layout */
     align-items: center;
-    margin-top:10%;
-    margin-left:50px /* Center vertically */
-    width: 50%;
-    height: 10%;
+    justify-content: center;
+     border-radius: 24px;
+      border: 0.2px solid grey;
+      
+     /* Set container background color */
+}
+
+.card {
+    /* Ensure the card takes 100% of the height of its container */
+    height: 60%;
+    width: 80%;
+    color:white;
+    /* Add padding for better visual appearance */
+    padding: 10px;
+    background-color: #D3D3D3; /* Set card background color */
+}
+
+
+
+.file-label {
+    display: flex;
+     flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 80%; /* Adjusted to 100% width */
     padding: 10px;
     box-sizing: border-box;
-    border: 2px solid #3498db; /* Border color */
-    border-radius: 5px;
-    background-color: #3498db; /* Background color */
-    color: black; /* Text color */
+    border: 2px solid #3498db;
+    border-radius: 24px;
+    background-color: #3498db;
+    color: black;
     text-align: center;
-    line-height: 30px; /* Line height should match height for vertical centering */
+    line-height: 30px;
     cursor: pointer;
-    }
-</style>
+}
 
-<!-- HTML for the styled file input -->
 
+        /* Style for the selected files container */
+   
+    </style>
 </head>
 <body>
-    <div class="container-fluid mt-5" >
+    <div class="container-fluid mt-5">
         @if(session('success'))
             <div class="alert alert-success">
                 {{ session('success') }}
             </div>
         @endif
 
-        <form action="{{ route('file.store') }}" method="post" enctype="multipart/form-data">
+        <form action="{{ route('file.store',$filter->id) }}" method="post" enctype="multipart/form-data">
             @csrf
             <div class="row">
                 <div class="col-md-4">
                     <div class="form-group">
-                     <label for="files">ClassifyTypeOne:</label>
-                     <div class="file-input-container">
-    <input type="file" name="ClassifyTypeOne" id="files" multiple accept=".pdf" class="file-input" required >
-    <p onchange="updateLabel()" styl="color:black"></p>
-    <label for="files" class="file-label">Choose File</label>
-</div>
+                     <center>   <label for="ClassifyTypeOne">ClassifyTypeOne:</label></center>
 
+                      <div class="container">
+                     <label for="ClassifyTypeOne" class="file-label">Choose File</label>
+                     <input type="file" name="ClassifyTypeOne[]" id="ClassifyTypeOne" multiple accept=".pdf" class="file-input" required hidden>
+                      <div class="card">
+                      
+                      <div style="overflow-y: auto;">
+                         <p id="selectedFilesClassifyTypeOne"></p>
+                      </div>
+                         </div>
+                    </div>
+        
                     </div>
                 </div>
-                <div class="col-md-4">
-                   <div class="form-group">
-                      <label for="files">ClassifyTypeTwo:</label>
-                      <div class="file-input-container">
-    <input type="file" name="ClassifyTypeOne" id="files" multiple accept=".pdf" class="file-input" required>
- <label for="files" class="file-label">Choose File</label>
-</div>
+                   <div class="col-md-4">
+                    <div class="form-group">
+                        <center><label for="ClassifyTypeTwo">ClassifyTypeTwo:</label></center>
 
-                   </div>
+                      <div class="container">
+                     <label for="ClassifyTypeTwo" class="file-label">Choose File</label>
+                     <input type="file" name="ClassifyTypeTwo[]" id="ClassifyTypeTwo" multiple accept=".pdf" class="file-input" required hidden>
+                      <div class="card">
+                       <p id="selectedFilesClassifyTypeTwo"></p>
+                         </div>
+                    </div>
+        
+                    </div>
                 </div>
-                <div class="col-md-4">
-                   <div class="form-group">
-                      <label for="files">Guest:</label>
-                      <div class="file-input-container">
-    <input type="file" name="ClassifyTypeOne" id="files" multiple accept=".pdf" class="file-input" required>
-  <label for="files" class="file-label">Choose File</label>
-</div>
+                   <div class="col-md-4">
+                    <div class="form-group">
+                   <center>     <label for="Guest">Guest:</label></center>
 
-                   </div>
+                      <div class="container">
+                     <label for="Guest" class="file-label">Choose File</label>
+                     <input type="file" name="Guest[]" id="Guest" multiple accept=".pdf" class="file-input" required hidden>
+                      <div class="card">
+                       <p id="selectedFilesGuest"></p>
+                         </div>
+                    </div>
+        
+                    </div>
                 </div>
             </div>
-      <center>      <button type="submit" class="btn btn-primary">Upload Files</button></center>
+            <center><button type="submit" class="btn btn-primary">Upload Files</button></center>
         </form>
     </div>
-    <script>
-    function updateLabel() {
-        var input = document.getElementById('files');
-        var label = document.getElementById('fileLabel');
 
-        if (input.files.length > 0) {
-            // Display the names of all selected files
-            label.textContent = Array.from(input.files).map(file => file.name).join(', ');
-        } else {
-            // If no file is selected, revert to the default label
-            label.textContent = 'Choose File';
-        }
-    }
-</script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.6.0/js/bootstrap.min.js"></script>
+ <script>
+        document.getElementById('ClassifyTypeOne').addEventListener('change', function(event) {
+            const fileInput = event.target;
+            const selectedFilesParagraph = document.getElementById('selectedFilesClassifyTypeOne');
+
+            // Check if files are selected
+            if (fileInput.files.length > 0) {
+                let fileNames = '';
+                for (const file of fileInput.files) {
+                    fileNames += file.name + '<br>';
+                }
+                selectedFilesParagraph.innerHTML = 'Selected Files:<br>' + fileNames;
+            } else {
+                selectedFilesParagraph.innerHTML = 'No files selected';
+            }
+        });
+    </script>
+     <script>
+        document.getElementById('ClassifyTypeTwo').addEventListener('change', function(event) {
+            const fileInput = event.target;
+            const selectedFilesParagraph = document.getElementById('selectedFilesClassifyTypeTwo');
+
+            // Check if files are selected
+            if (fileInput.files.length > 0) {
+                let fileNames = '';
+                for (const file of fileInput.files) {
+                    fileNames += file.name + '<br>';
+                }
+                selectedFilesParagraph.innerHTML = 'Selected Files:<br>' + fileNames;
+            } else {
+                selectedFilesParagraph.innerHTML = 'No files selected';
+            }
+        });
+    </script>
+        <script>
+        document.getElementById('Guest').addEventListener('change', function(event) {
+            const fileInput = event.target;
+            const selectedFilesParagraph = document.getElementById('selectedFilesGuest');
+
+            // Check if files are selected
+            if (fileInput.files.length > 0) {
+                let fileNames = '';
+                for (const file of fileInput.files) {
+                    fileNames += file.name + '<br>';
+                }
+                selectedFilesParagraph.innerHTML = 'Selected Files:<br>' + fileNames;
+            } else {
+                selectedFilesParagraph.innerHTML = 'No files selected';
+            }
+        });
+    </script>
 </body>
 </html>

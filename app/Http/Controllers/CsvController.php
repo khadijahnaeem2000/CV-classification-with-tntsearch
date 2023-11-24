@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\filterfile;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Response;
 use Spatie\PdfToText\Pdf;
@@ -13,13 +14,61 @@ use Smalot\PdfParser\Parser;
 
 class CsvController extends Controller
 {
-    public function get_csv()
+    public function getClassifyOne($id)
     {
+        $filter = filterfile::find($id);
+        $csvName = $filter->csvName;
+        $folderNameOne = $filter->FolderNameOne;
         // Define the folder where PDF files are stored
-        $pdfFolder = public_path('pdfs');
+        $pdfFolder = public_path($folderNameOne);
 
         // Define the path to the CSV file
-        $csvFilePath = public_path('files/download.csv');
+        $csvFilePath = public_path('files/'.$csvName);
+
+        // Check if the PDF folder exists, if not create it
+        if (!File::exists($csvFilePath)) {
+            // If the file doesn't exist, create it with a header row
+            $handle = fopen($csvFilePath, 'w');
+           // fputcsv($handle, ['Type', 'Text']); // Add more columns as needed
+            fclose($handle);
+        }
+    
+        // Open the CSV file for appending
+        $handle = fopen($csvFilePath, 'a');
+
+        // Create or open the CSV file for writing
+
+        // Fetch all PDF files in the folder
+        $pdfFiles = File::files($pdfFolder);
+
+        foreach ($pdfFiles as $pdfFile) {
+            $pdfPath = $pdfFile->getRealPath();
+
+            // Convert PDF to text
+            $pdfText = $this->extractTextFromPDF($pdfPath);
+          
+            // Write data to the CSV file
+            fputcsv($handle, [
+                'resume',
+                $pdfText, // Add more columns as needed
+            ]);
+        }
+
+        fclose($handle);
+
+        // Download the CSV file
+        return Response::download($csvFilePath, 'download.csv', ['Content-Type' => 'text/csv']);
+    }
+    public function getClassifyTwo($id)
+    {
+        $filter = filterfile::find($id);
+        $csvName = $filter->csvName;
+        $folderNameTwo = $filter->FolderNameTwo;
+        // Define the folder where PDF files are stored
+        $pdfFolder = public_path($folderNameTwo);
+
+        // Define the path to the CSV file
+        $csvFilePath = public_path('files/'.$csvName);
 
         // Check if the PDF folder exists, if not create it
         if (!File::exists($csvFilePath)) {
@@ -92,9 +141,12 @@ class CsvController extends Controller
         }
     }
 
-    public function launchFilter()
+    public function launchFilter($id)
     {
-        $file = public_path('files/download.csv');
+        $filter = filterfile::find($id);
+        $csvName = $filter->csvName;
+        $filterName = $filter->filterName;
+        $file = public_path('files/'.$csvName);
         $data = $this->loadCSV($file);
     
         $classifier = new TNTClassifier();
@@ -108,7 +160,7 @@ class CsvController extends Controller
             $classifier->learn($text, $type);
         }
     
-        $classifier->save(public_path('classify/classify.csv'));
+        $classifier->save(public_path('classify/'.$filterName.".csv"));
     }
     
     function loadCSV($filePath)
@@ -159,6 +211,36 @@ class CsvController extends Controller
     $guess = $classifier->predict($allText);
 
     print_r($guess);
+}
+
+public function trainModel($id){
+    $this->getClassifyOne($id);
+    $this->getClassifyTwo($id);
+    $this->launchFilter($id);
+    $filter= filterfile::find($id);
+    $filterId = $filter->id;
+    return redirect()->route('test', ['id' => $filterId]);
+
+}
+public function test($id){
+   
+        $filterFile = FilterFile::findOrFail($id);
+        if($filterFile){
+         $folderName = $filterFile->Guest;
+          
+        // Get all PDF files in the folder
+        $pdfFiles = glob($folderName . '\*.pdf');
+        
+        
+        return view('file.displayPDF', compact('pdfFiles', 'folderName'));
+        }
+       
+    }
+
+
+public function train($id){
+     $filter = filterfile::find($id);
+     return view('file.TrainModel',compact('filter'));
 }
 
 }

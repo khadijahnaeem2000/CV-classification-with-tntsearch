@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link
+            rel="stylesheet"
+            href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        />
+        <style>
+            /* Set a fixed height for the container */
+            .container {
+                height: 300px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                background-color: black; /* Set container background color */
+            }
+
+            /* Adjust card styling as needed */
+            .card {
+                /* Ensure the card takes 100% of the height of its container */
+                height: 60%;
+                width: 80%;
+                overflow-y: auto;
+                /* Add padding for better visual appearance */
+                padding: 10px;
+                background-color: grey; /* Set card background color */
+            }
+        </style>
+        <title>Styled Scrollable Card within Container</title>
+    </head>
+    <body>
+        <div class="container">
+            <div class="card">
+                <!-- Your scrollable card content goes here -->
+                <p><!-- Long content... --></p>
+            </div>
+        </div>
+
+        <!-- Bootstrap JS and Popper.js (for Bootstrap's JavaScript components) -->
+        <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    </body>
+</html>

@@ -17,7 +17,7 @@ use App\Http\Controllers\FileController;
 
 
 Route::get('/upload/{id}', [FileController::class, 'index'])->name('file.index');
-Route::post('/upload', [FileController::class, 'store'])->name('file.store');
+Route::post('/upload/{id}', [FileController::class, 'store'])->name('file.store');
 Route::get('/', function () {
     return view('welcome');
 });
@@ -32,3 +32,8 @@ Route::post('filterStore', [\App\Http\Controllers\FilterfileController::class, '
 Route::post('ClassficationStore/{id}', [\App\Http\Controllers\FilterfileController::class, 'ClassficationStore'])->name('ClassficationStore');
 
 Route::get('filterClassfication/{id}', [\App\Http\Controllers\FilterfileController::class, 'filterClassfication'])->name('filterClassfication');
+
+Route::get('train/{id}', [\App\Http\Controllers\CsvController::class, 'train'])->name('train');
+Route::get('trainModel/{id}', [\App\Http\Controllers\CsvController::class, 'trainModel'])->name('trainModel');
+
+Route::get('test/{id}', [\App\Http\Controllers\CsvController::class, 'test'])->name('test');
